@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebXR Scene</title>
+    <style>
+        body { margin: 0; overflow: hidden; }
+        #status-message {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: green;
+            background-color: white;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="status-message"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script type="module">
+        // Get the experience name from the URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const experienceName = urlParams.get('experience');
+
+        // Dynamically import the appropriate module
+        if (experienceName) {
+            import(`./scripts/${experienceName}.js`)
+                .then(module => {
+                    // The module's default export should be a function that initializes the experience
+                    module.default();
+                })
+                .catch(error => {
+                    document.getElementById('status-message').textContent = `Error loading experience: ${error}`;
+                });
+        } else {
+            document.getElementById('status-message').textContent = 'No experience specified';
+        }
+    </script>
+</body>
+</html>
